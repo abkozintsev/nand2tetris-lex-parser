@@ -1,0 +1,23 @@
+class KillMeNow {
+    static int fuck, shit, piss;
+    field boolean snap, crackle, pop;
+    constructor int fakeMethod(int x, int y, boolean z) {
+        var int a, b;
+        var boolean c;
+        let a = x + y;
+        let c = z;
+        let b = 5;
+        while (b < 3) {
+            let b = b - 1;
+        }
+        return c;
+    }
+    constructor int fakeMethod2(int x, int y, boolean z) {
+        var int a, b;
+        var boolean c;
+        let a = x + y;
+        let c = z;
+        let b = a + c;
+        return c;
+    }
+}
