@@ -2,38 +2,52 @@ from parseTypes import *
 from lexer import *
 import xml.dom.minidom
 
-#generally, this code by descending from the top to the bottom, calling different compile functions
+#generally, this code by descending from the top to the bottom, calling different compile functions based on what a code segment must be in order to follow
+#Jack grammar rules
 
-#implements 'class' className '{' classVarDec* subroutineDec* '}'
+#class: 'class' className '{' classVarDec* subroutineDec* '}'
+#takes in a list of tokens and the index, tokens[index] should be the start of declaration
 def compileClass(tokens, index):
+    #'class'
+    if tokens[index] != Keyword('class'):
+        raise Exception(f"Error: invalid start of class dec, first token must be <keyword> class </keyword>, instead it is {tokens[0]}.")
+    #className
     name = Name(tokens[1])
     endOfClass = findClosingBracket(tokens, index, '{', '}')
+    #finds and compiles classVarDecs and sets index to immediately after, which should be the start of subroutineDecs
     (classVarDecs,index) = compileClassVarDecs(tokens,index+3)
+    #finds subroutineDecs and sets index to immediately after, which should be the same as the endOfClass variable for sanity check
     (subroutineDecsRaw,index) = findSubroutines(tokens, index-1)
+    if index != endOfClass:
+        raise Exception(f"Error: end of class does not match end of subroutines")
     subroutineDecs = list(map(compileSubroutineDec, subroutineDecsRaw))
     return(JackClass(name,classVarDecs,subroutineDecs), endOfClass)
 
-#tested
+#classVarDec: ('static' | 'field') type varName (',' varName)*;
+#index should point to start of decs 
 def compileClassVarDecs(tokens,index):
+    #seperates the classVarDecs into [classVarDec], as well as giving the index of the start of subroutines
     (classVarDecsRaw, startSubroutines) = findList(tokens,index,lambda x: x == Symbol(';'),lambda x: x in [Keyword("constructor"),Keyword("function"),Keyword("method")])
     classVarDecs = []
     if len(classVarDecsRaw[0]) > 0:
+        #compiles each classVarDec individually
         classVarDecs = list(map(compileClassVarDec,classVarDecsRaw))
     return(classVarDecs, startSubroutines)
 
 #compiles varDec subroutine
-#tested
+#classVarDec: ('static' | 'field') type varName (',' varName)*;
+#input should be an individual declaration from start to finish
 def compileClassVarDec(varDecRaw):
     if varDecRaw[0] not in [Keyword("static"),Keyword("field")]:
         raise Exception(f"Error: invalid class variable declaration, expected static or field, found {varDecRaw[0]}")
-    jackType = JackType(varDecRaw[1])
+    jackType = compileType(varDecRaw[1])
     names = []
     for i in range(2, len(varDecRaw), 2):
         names.append(Name(varDecRaw[i]))
     return ClassVarDec(varDecRaw[0],jackType,names)
 
-#determines type
-#tested
+#compile JackType
+#JackType: 'int' | 'char' | 'boolean' | 'void' | className
 def compileType(token):
     if token in [Keyword("int"),Keyword("char"),Keyword("boolean"), Keyword("void")]:
         return JackType(token)
@@ -42,8 +56,8 @@ def compileType(token):
     else:
         raise Exception(f"Error: {token} is an invalid type")
 
-#finds a list of possible phrases given conditions to seperate phrases and to end list
-#tested
+#extracts useful sublists from big lists
+#input tokens, start index, conditions to seperate lists, condition to stop extracting
 def findList(tokens, start,seperateCond,endCond):
     if len(tokens) == 0:
         return(([], 1))
