@@ -105,7 +105,7 @@ def compileSubroutineDec(subroutineDecRaw):
     name = SubroutineName(subroutineDecRaw[2])
     (parameterList, startBod) = findList(subroutineDecRaw,4,lambda x: x == Symbol(','),lambda x: x == Symbol(')'))
     subroutineBody = compileSubroutineBody(subroutineDecRaw[startBod:len(subroutineDecRaw)],0)
-    return(SubroutineDec(conFunMet,jackType,name,parameterList,subroutineBody))
+    return(SubroutineDec(conFunMet,jackType,name,ParameterList(parameterList),subroutineBody))
     
 #tested
 def compileSubroutineBody(tokens, start):
@@ -148,15 +148,15 @@ def compileStatements(tokens, start):
         else:
             raise Exception(f"Error: attempted to compile invalid statement, {tokens[i]} cannot be beginning of new statement.")
         i = end+1
-    return(statements)
+    return(Statements(statements))
 
 #tested
 def compileLet(tokens):
     name = Name(tokens[1])
     if tokens[2] == Symbol('['):
-        startExp1 = 2
+        startExp1 = 3
         endExp1 = findClosingBracket(tokens, 2, '[', ']')
-        expression1 = compileExp(tokens[startExp1:endExp1+1],0)
+        expression1 = [compileExp(tokens[startExp1:endExp1],0)]
         startExp2 = endExp1+2
     else:
         expression1 = []
@@ -219,7 +219,7 @@ def compileExp(tokens, index):
 #tested
 def compileOpTerms(tokens, index):
     (opTerm, newIndex) = compileOpTerm(tokens, index)
-    if newIndex < len(tokens):
+    if newIndex < len(tokens)-1:
         return [opTerm] + compileOpTerms(tokens, newIndex)
     else:
         return [opTerm]
@@ -387,6 +387,7 @@ def compileOut(tokens):
     #utilization of a py standard library xml formatter (just adds indentation, which is not theoretically necessary but much more readable)
     dom = xml.dom.minidom.parseString(cleanedLines) 
     xmlOut = dom.toprettyxml()
+    xmlOut = xmlOut.replace("jackClass", "class")
     out = open('out.xml', 'w')
     out.write(xmlOut)  
 
@@ -399,5 +400,4 @@ def main():
     #so I made another function that manually fixes line by line
     compileOut(str(test[0]))
     
-
 main()

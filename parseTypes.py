@@ -1,14 +1,25 @@
 class XMLable():
     value = None
     def __str__(self):
-        return(f"\n<{type(self).__name__}> {self.value} \n</{type(self).__name__}>")
+        lowerType = list(type(self).__name__)
+        lowerType[0] = lowerType[0].lower()
+        lowerType = ''.join(lowerType)
+        return(f"\n<{lowerType}> {self.value} \n</{lowerType}>")
     def __repr__(self):
         # print("repr call: ", self)
-        return(f"\n<{type(self).__name__}> {self.value} \n</{type(self).__name__}>")
+        lowerType = list(type(self).__name__)
+        lowerType[0] = lowerType[0].lower()
+        lowerType = ''.join(lowerType)
+        return(f"\n<{lowerType}> {self.value} \n</{lowerType}>")
     def __eq__(self, other):
         # print("eq call: ", self, other)
         return(type(self) == type(other) and self.value == other.value)
 class MonoToken(XMLable):
+    terminal = False
+    def __str__(self):
+        return(str(self.value))
+    def __repr__(self):
+        return(str(self.value))
     subtypes = None
     def __init__(self, value):
         if type(value) in self.subtypes:
@@ -19,10 +30,16 @@ class MonoToken(XMLable):
 class TerminalToken(MonoToken):
     terminal = True
     def __str__(self):
-        return(f"\n<{type(self).__name__}> {self.value} </{type(self).__name__}>")
+        lowerType = list(type(self).__name__)
+        lowerType[0] = lowerType[0].lower()
+        lowerType = ''.join(lowerType)
+        return(f"\n<{lowerType}> {self.value} </{lowerType}>")
     def __repr__(self):
+        lowerType = list(type(self).__name__)
+        lowerType[0] = lowerType[0].lower()
+        lowerType = ''.join(lowerType)
         # print("repr call: ", self)
-        return(f"\n<{type(self).__name__}> {self.value} </{type(self).__name__}>")
+        return(f"\n<{lowerType}> {self.value} </{lowerType}>")
 
 class Keyword(TerminalToken):
     subtypes = [str]
@@ -104,6 +121,19 @@ class SubroutineName(MonoToken):
 
 class Statements(MonoToken):
     subtypes = [list]
+    def __len__(self):
+        return len(self.value)
+    def __str__(self):
+        lowerType = list(type(self).__name__)
+        lowerType[0] = lowerType[0].lower()
+        lowerType = ''.join(lowerType)
+        return(f"\n<{lowerType}> {self.value} \n</{lowerType}>")
+    def __repr__(self):
+        # print("repr call: ", self)
+        lowerType = list(type(self).__name__)
+        lowerType[0] = lowerType[0].lower()
+        lowerType = ''.join(lowerType)
+        return(f"\n<{lowerType}> {self.value} \n</{lowerType}>")
 
 class LetStatement(XMLable):
     def __init__(self, name, expression1, expression2):
@@ -114,6 +144,7 @@ class LetStatement(XMLable):
             self.value.append(Symbol(']'))
         self.value.append(Symbol('='))
         self.value.append(expression2)
+        self.value.append(Symbol(';'))
         self.expression1 = expression1
 
 class IfStatement(XMLable):

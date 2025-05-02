@@ -155,8 +155,6 @@ def tokenClassifier(token):
             return (Symbol("&lt;"))
         elif token == '>': 
             return (Symbol("&gt;"))
-        elif token == "\"":
-            return (Symbol("&quot;"))
         elif token == "&":
             return (Symbol("&amp;"))
         return(Symbol(token))
@@ -165,7 +163,7 @@ def tokenClassifier(token):
     elif token[0] in "0123456789":
         return(IntegerConstant(int(token)))
     elif token[0] == '"':
-        return(StringConstant(token))
+        return(StringConstant(token[1:-1]))
     else:
         return(Identifier(token))
 

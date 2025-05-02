@@ -1,23 +1,27 @@
-class KillMeNow {
-    static int fuck, shit, piss;
-    field boolean snap, crackle, pop;
-    constructor int fakeMethod(int x, int y, boolean z) {
-        var int a, b;
-        var boolean c;
-        let a = x + y;
-        let c = z;
-        let b = 5;
-        while (b < 3) {
-            let b = b - 1;
-        }
-        return c;
+class Main {
+    static boolean test;    // Added for testing -- there is no static keyword
+                            // in the Square files.
+    function void main() {
+      var SquareGame game;
+      let game = SquareGame.new();
+      do game.run();
+      do game.dispose();
+      return;
     }
-    constructor int fakeMethod2(int x, int y, boolean z) {
-        var int a, b;
-        var boolean c;
-        let a = x + y;
-        let c = z;
-        let b = a + c;
-        return c;
+    function void more() {  // Added to test Jack syntax that is not used in
+        var int i, j;       // the Square files.
+        var String s;
+        var Array a;
+        if (false) {
+            let s = "string constant";
+            let s = null;
+            let a[1] = a[2];
+        }
+        else {              // There is no else keyword in the Square files.
+            let i = i * (-j);
+            let j = j / (-2);   // note: unary negate constant 2
+            let i = i | j;
+        }
+        return;
     }
 }
