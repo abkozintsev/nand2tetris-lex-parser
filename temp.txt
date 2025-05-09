@@ -112,7 +112,8 @@
 <keyword> if </keyword>, 
 <symbol> ( </symbol>, 
 <expression> [
-<term> None 
+<term> 
+<keyword> false </keyword> 
 </term>] 
 </expression>, 
 <symbol> ) </symbol>, 
@@ -134,7 +135,8 @@
 <identifier> s </identifier>, 
 <symbol> = </symbol>, 
 <expression> [
-<term> None 
+<term> 
+<keyword> null </keyword> 
 </term>] 
 </expression>, 
 <symbol> ; </symbol>] 

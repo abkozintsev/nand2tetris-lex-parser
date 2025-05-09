@@ -59,10 +59,13 @@ class Identifier(TerminalToken):
 class JackClass(XMLable):
     def __init__(self, className, classVarDecs, subroutineDecs):
         self.value = [Keyword('class'),className,Symbol('{'),classVarDecs,subroutineDecs,Symbol('}')]
+        self.className = className
+        self.classVarDecs = classVarDecs
+        self.subroutineDecs = subroutineDecs
 
 class ClassVarDec(XMLable):
-    def __init__(self, staticOrField, terminalType, varNames):
-        self.value = [staticOrField,terminalType,varNames,Symbol(';')]
+    def __init__(self, staticOrField, jackType, varNames):
+        self.value = [staticOrField,jackType,varNames,Symbol(';')]
         if len(varNames) == 1:
             self.value[2] = varNames[0]
         elif len(varNames) > 1:
@@ -72,11 +75,19 @@ class ClassVarDec(XMLable):
                 temp.append(Symbol(','))
             temp.append(varNames[-1])
             self.value[2]=temp
+        self.staticOrField = staticOrField
+        self.jackType = jackType
+        self.varNames = varNames
         
 
 class SubroutineDec(XMLable):
-    def __init__(self, keyword, type, name, parameterList, subroutineBody):
-        self.value = [keyword, type, name, Symbol('('), parameterList, Symbol(')'), subroutineBody]
+    def __init__(self, keyword, jackType, name, parameterList, subroutineBody):
+        self.value = [keyword, jackType, name, Symbol('('), parameterList, Symbol(')'), subroutineBody]
+        self.keyword = keyword
+        self.jackType = jackType
+        self.name = name
+        self.parameterList = parameterList
+        self.subroutineBody = subroutineBody
 
 class ParameterList(XMLable):
     def __init__(self, parameters):
@@ -90,10 +101,12 @@ class ParameterList(XMLable):
                 temp.append(Symbol(','))
             temp.append(parameters[-1])
         self.value = temp
+        self.parameters = parameters
 
 class SubroutineBody(XMLable):
     def __init__(self, varDecs, statements):
         self.value = [Symbol('{'), varDecs, statements, Symbol('}')]
+        self.statements = statements
 
 class VarDec(XMLable):
     def __init__(self, jackType, varNames):
@@ -107,6 +120,7 @@ class VarDec(XMLable):
                 temp.append(Symbol(','))
             temp.append(varNames[-1])
             self.value[2]=temp
+        self.varNames = varNames
     
 class Name(MonoToken):
     subtypes = [Identifier]
@@ -146,6 +160,8 @@ class LetStatement(XMLable):
         self.value.append(expression2)
         self.value.append(Symbol(';'))
         self.expression1 = expression1
+        self.name = name
+        self.expression2 = expression2
 
 class IfStatement(XMLable):
     def __init__(self, expression, statements1, statements2):
@@ -155,14 +171,20 @@ class IfStatement(XMLable):
             self.value.append(Symbol('{'))
             self.value.append(statements2)
             self.value.append(Symbol('}'))
+        self.expression = expression
+        self.statements1 = statements1
+        self.statements2 = statements2
 
 class WhileStatement(XMLable):
     def __init__(self, expression, statements):
         self.value = [Keyword('while'), Symbol('('), expression, Symbol(')'), Symbol('{'), statements, Symbol('}')]
+        self.expression = expression
+        self.statements = statements
 
 class DoStatement(XMLable):
     def __init__(self, subroutineCall):
         self.value = [Keyword('do'), subroutineCall, Symbol(';')]
+        self.subroutineCall = subroutineCall
 
 class ReturnStatement(XMLable):
     def __init__(self, expression):
@@ -171,6 +193,7 @@ class ReturnStatement(XMLable):
         if len(expression) == 1:
             self.value.append(expression[0])
         self.value.append(Symbol(';'))
+        self.expression = expression
 
 class Statement(MonoToken):
     subtypes = [LetStatement, IfStatement, WhileStatement, DoStatement, ReturnStatement]
@@ -178,10 +201,16 @@ class Statement(MonoToken):
 class OpTerm(XMLable):
     def __init__(self, op, term):
         self.value = (op, term)
+        self.op = op
+        self.term = term
+    def __str__(self):
+        return()
 
 class Expression(XMLable):
     def __init__(self, startTerm, opTerms):
         self.value = [startTerm] + opTerms
+        self.startTerm = startTerm
+        self.opTerms = opTerms
 
 class SubroutineCall(XMLable):
     def __init__(self, subName, expressionList, classOrName):
@@ -189,6 +218,9 @@ class SubroutineCall(XMLable):
             self.value = [classOrName, Symbol('.'), subName, Symbol('('), expressionList, Symbol(')')]
         else:
             self.value = [subName, Symbol('('), expressionList, Symbol(')')]
+        self.subName = subName
+        self.expressionList = expressionList
+        self.classOrName = classOrName
 
 class ExpressionList(XMLable):
     def __init__(self,expressions):
@@ -214,7 +246,7 @@ class KeywordConstant(MonoToken):
 class Term(XMLable):
     def __init__(self, x, y):
         #tested
-        if type(x) in [IntegerConstant, StringConstant, KeywordConstant, SubroutineCall]:
+        if type(x) in [IntegerConstant, StringConstant, Keyword, SubroutineCall]:
             self.value = x
         elif type(x) == Name:
             #tested
@@ -228,3 +260,5 @@ class Term(XMLable):
         #tested
         elif type(x) == UnaryOp:
             self.value = [x, y]
+        self.x = x
+        self.y = y

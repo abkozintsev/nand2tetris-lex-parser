@@ -107,7 +107,9 @@
 					<keyword> if </keyword>
 					<symbol> ( </symbol>
 					<expression>
-						<term/>
+						<term>
+							<keyword> false </keyword>
+						</term>
 					</expression>
 					<symbol> ) </symbol>
 					<symbol> { </symbol>
@@ -128,7 +130,9 @@
 							<identifier> s </identifier>
 							<symbol> = </symbol>
 							<expression>
-								<term/>
+								<term>
+									<keyword> null </keyword>
+								</term>
 							</expression>
 							<symbol> ; </symbol>
 						</letStatement>
