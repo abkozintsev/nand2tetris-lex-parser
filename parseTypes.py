@@ -1,45 +1,51 @@
 class XMLable():
     value = None
     def __str__(self):
-        lowerType = list(type(self).__name__)
-        lowerType[0] = lowerType[0].lower()
-        lowerType = ''.join(lowerType)
-        return(f"\n<{lowerType}> {self.value} \n</{lowerType}>")
+        # lowerType = list(type(self).__name__)
+        # lowerType[0] = lowerType[0].lower()
+        # lowerType = ''.join(lowerType)
+        # return(f"\n<{lowerType}> {self.value} \n</{lowerType}>")
+        return(f"({self.value}, {type(self).__name__})")
     def __repr__(self):
-        # print("repr call: ", self)
-        lowerType = list(type(self).__name__)
-        lowerType[0] = lowerType[0].lower()
-        lowerType = ''.join(lowerType)
-        return(f"\n<{lowerType}> {self.value} \n</{lowerType}>")
+        # lowerType = list(type(self).__name__)
+        # lowerType[0] = lowerType[0].lower()
+        # lowerType = ''.join(lowerType)
+        # return(f"\n<{lowerType}> {self.value} \n</{lowerType}>")
+        return(f"({self.value}, {type(self).__name__})")
     def __eq__(self, other):
-        # print("eq call: ", self, other)
         return(type(self) == type(other) and self.value == other.value)
+    def __hash__(self):
+        return hash(self.value)
+
 class MonoToken(XMLable):
-    terminal = False
     def __str__(self):
-        return(str(self.value))
+        # return(str(self.value))
+        return(f"({self.value}, {type(self).__name__})")
     def __repr__(self):
-        return(str(self.value))
+        # return(str(self.value))
+        return(f"({self.value}, {type(self).__name__})")
     subtypes = None
     def __init__(self, value):
         if type(value) in self.subtypes:
             self.value = value
         else:
             raise Exception(f"Error: subtype of {type(self)} must be one of {self.subtypes}, instead it is {type(value)}.")
+    def termVal(self):
+        return(self.value.termVal())
         
 class TerminalToken(MonoToken):
-    terminal = True
-    def __str__(self):
-        lowerType = list(type(self).__name__)
-        lowerType[0] = lowerType[0].lower()
-        lowerType = ''.join(lowerType)
-        return(f"\n<{lowerType}> {self.value} </{lowerType}>")
-    def __repr__(self):
-        lowerType = list(type(self).__name__)
-        lowerType[0] = lowerType[0].lower()
-        lowerType = ''.join(lowerType)
-        # print("repr call: ", self)
-        return(f"\n<{lowerType}> {self.value} </{lowerType}>")
+    # def __str__(self):
+    #     lowerType = list(type(self).__name__)
+    #     lowerType[0] = lowerType[0].lower()
+    #     lowerType = ''.join(lowerType)
+    #     return(f"\n<{lowerType}> {self.value} </{lowerType}>")
+    # def __repr__(self):
+    #     lowerType = list(type(self).__name__)
+    #     lowerType[0] = lowerType[0].lower()
+    #     lowerType = ''.join(lowerType)
+    #     return(f"\n<{lowerType}> {self.value} </{lowerType}>")
+    def termVal(self):
+        return(self.value)
 
 class Keyword(TerminalToken):
     subtypes = [str]

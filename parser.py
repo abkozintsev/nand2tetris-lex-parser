@@ -388,11 +388,10 @@ def compileOut(tokens):
     dom = xml.dom.minidom.parseString(cleanedLines) 
     xmlOut = dom.toprettyxml()
     xmlOut = xmlOut.replace("jackClass", "class")
-    out = open('out.xml', 'w')
+    out = open('parsed.xml', 'w')
     out.write(xmlOut)  
 
-
-def main():
+def xmlOut():
     rawInput = i()
     tokens = lex(rawInput)
     test = compileClass(tokens,0)
@@ -400,4 +399,8 @@ def main():
     #so I made another function that manually fixes line by line
     compileOut(str(test[0]))
     
-main()
+def getParsed():
+    rawInput = i()
+    rawTokens = lex(rawInput)
+    out = compileClass(rawTokens, 0)[0]
+    return out

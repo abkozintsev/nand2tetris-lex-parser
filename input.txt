@@ -1,6 +1,8 @@
 class Main {
-    static boolean test;    // Added for testing -- there is no static keyword
-                            // in the Square files.
+    static boolean test, two, three;
+    field int hi, bye, my;
+    static int four, five;
+
     function void main() {
       var SquareGame game;
       let game = SquareGame.new();
