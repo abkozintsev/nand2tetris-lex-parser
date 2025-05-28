@@ -112,6 +112,7 @@ class ParameterList(XMLable):
 class SubroutineBody(XMLable):
     def __init__(self, varDecs, statements):
         self.value = [Symbol('{'), varDecs, statements, Symbol('}')]
+        self.varDecs = varDecs
         self.statements = statements
 
 class VarDec(XMLable):
@@ -126,6 +127,7 @@ class VarDec(XMLable):
                 temp.append(Symbol(','))
             temp.append(varNames[-1])
             self.value[2]=temp
+        self.jackType = jackType
         self.varNames = varNames
     
 class Name(MonoToken):

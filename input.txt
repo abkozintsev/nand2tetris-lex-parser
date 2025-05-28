@@ -3,7 +3,7 @@ class Main {
     field int hi, bye, my;
     static int four, five;
 
-    function void main() {
+    function void main(int x, String y) {
       var SquareGame game;
       let game = SquareGame.new();
       do game.run();
