@@ -1,4 +1,4 @@
-goofy recursive descent parser/lexer
+goofy recursive descent parser/lexer written for Jack programming language (extremely simplified Java, [WashU gives good docs](https://classes.engineering.wustl.edu/cse365/jack.php))
 
 To use: replace input.txt with whatever code you want to parse, run parser.py
 
